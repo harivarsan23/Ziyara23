@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Ziyara — Login</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Cormorant+Garamond:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --gold: #d4af37;
+    --gold-light: #ffd700;
+    --bg-overlay: rgba(0,0,0,0.25);
+  }
+
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font-family: 'Cormorant Garamond', serif;
+    overflow: hidden;
+  }
+
+  .background {
+    background-image: url('bg.png');
+    background-size: cover;
+    background-position: center;
+    position: fixed;
+    inset: 0;
+    z-index: -2;
+  }
+  .background::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: var(--bg-overlay);
+    backdrop-filter: blur(2px);
+    z-index: 1;
+  }
+
+  .auth-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 460px;
+    height: 560px;
+    perspective: 1500px;
+  }
+
+  .card {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: rgba(25,25,25,0.95);
+    border: 2px solid var(--gold);
+    border-radius: 20px;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.7);
+    padding: 80px 35px 35px 35px;
+    box-sizing: border-box;
+    color: white;
+    font-family: 'Cormorant Garamond', serif;
+    transform: translateX(0) rotateZ(0deg);
+    opacity: 1;
+    z-index: 1;
+    transition: transform 0.8s cubic-bezier(.4,1.5,.75,1.25), opacity 0.8s ease, z-index 0s;
+  }
+  .card.active { z-index: 2; }
+
+  /* Logo */
+  .card .logo-container {
+    position: absolute;
+    top: -50px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background: #222;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 3px solid var(--gold);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.7);
+    z-index: 5;
+  }
+  .card .logo-container img {
+    width: 80%;
+    height: 80%;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+
+  .card h1 {
+    font-family: 'Cinzel', serif;
+    letter-spacing: 1px;
+    color: var(--gold-light);
+    text-align: center;
+    margin-bottom: 15px;
+    font-size: 28px;
+  }
+
+  .input-group { margin-bottom: 18px; }
+  label { display: block; font-size: 14px; color: var(--gold-light); margin-bottom: 5px; }
+  input[type="text"], input[type="email"], input[type="password"] {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--gold);
+    border-radius: 10px;
+    background: #222;
+    color: white;
+    outline: none;
+    font-size: 14px;
+    transition: all 0.3s;
+  }
+  input:focus { border-color: var(--gold-light); box-shadow: 0 0 10px var(--gold); }
+
+  .auth-btn {
+    width: 100%;
+    padding: 12px;
+    margin-top: 12px;
+    background: linear-gradient(90deg, var(--gold), var(--gold-light));
+    border: none;
+    border-radius: 10px;
+    color: black;
+    font-weight: bold;
+    font-size: 16px;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+  .auth-btn:hover { background: linear-gradient(90deg, var(--gold-light), var(--gold)); transform: scale(1.03); }
+
+  .toggle-description { text-align:center; font-size:13px; color:var(--gold-light); margin:10px 0 3px 0; }
+  .toggle-btn {
+    display:block; width:100%; text-align:center; margin:3px 0; padding:8px 0;
+    font-size:14px; color:var(--gold-light); background:transparent; border:1px solid var(--gold-light);
+    border-radius:8px; cursor:pointer; transition:0.3s;
+  }
+  .toggle-btn:hover { background:var(--gold-light); color:#000; }
+</style>
+</head>
+<body>
+<div class="background"></div>
+
+<div class="auth-container">
+  <!-- Login Card -->
+  <div class="card active" id="card-login">
+    <div class="logo-container"><img src="z.png" alt="Ziyara"></div>
+    <h1>Check in with Ziyara</h1>
+    <div class="input-group"><label>Email</label><input type="email" id="login-email" placeholder="Email"></div>
+    <div class="input-group"><label>Password</label><input type="password" id="login-password" placeholder="Password"></div>
+    <button class="auth-btn" onclick="loginUser()">Login</button>
+    <div class="toggle-description">Don't have an account?</div>
+    <button class="toggle-btn" onclick="switchCard('signup')">Sign Up</button>
+    <div class="toggle-description">Forgot your password?</div>
+    <button class="toggle-btn" onclick="switchCard('forgot')">Forgot Password</button>
+  </div>
+
+  <!-- Signup Card -->
+  <div class="card" id="card-signup">
+    <div class="logo-container"><img src="z.png" alt="Ziyara"></div>
+    <h1>Create your profile</h1>
+    <div class="input-group"><label>Name</label><input type="text" id="signup-name" placeholder="Full Name"></div>
+    <div class="input-group"><label>Email</label><input type="email" id="signup-email" placeholder="Email"></div>
+    <div class="input-group"><label>Password</label><input type="password" id="signup-password" placeholder="Password"></div>
+    <button class="auth-btn" onclick="registerUser()">Create Account</button>
+    <div class="toggle-description">Already have an account?</div>
+    <button class="toggle-btn" onclick="switchCard('login')">Sign In</button>
+  </div>
+
+  <!-- Forgot Password Card -->
+  <div class="card" id="card-forgot">
+    <div class="logo-container"><img src="z.png" alt="Ziyara"></div>
+    <h1>Forgot Password ❓</h1>
+    <div class="input-group"><label>Email</label><input type="email" id="forgot-email" placeholder="Enter your registered email"></div>
+    <div class="input-group"><label>New Password</label><input type="password" id="forgot-password" placeholder="Enter new password"></div>
+    <button class="auth-btn" onclick="resetPassword()">Reset Password</button>
+    <div class="toggle-description">Remembered your password?</div>
+    <button class="toggle-btn" onclick="switchCard('login')">Back to Sign In</button>
+  </div>
+</div>
+
+<script>
+  /*********************************
+   * CARD SWITCHING
+   *********************************/
+  const cards = {
+    login: document.getElementById('card-login'),
+    signup: document.getElementById('card-signup'),
+    forgot: document.getElementById('card-forgot')
+  };
+  let current = 'login';
+
+  function switchCard(target){
+    if(target === current) return;
+    cards[current].style.transform = target==='signup'
+      ? 'translateX(-120%) rotateZ(-20deg)'
+      : 'translateX(120%) rotateZ(20deg)';
+    cards[current].style.opacity = 0;
+    cards[current].classList.remove('active');
+
+    cards[target].style.transform = 'translateX(0) rotateZ(0deg)';
+    cards[target].style.opacity = 1;
+    cards[target].classList.add('active');
+    current = target;
+  }
+
+  /*********************************
+   * PRESET USERS (MERGE)
+   *********************************/
+  const presetUsers = [
+    { name:'Super Admin', email:'admin@ziyara.com', password:'admin123', role:'admin', redirect:'super.html' },
+    { name:'Admin Two', email:'admin2@cloud.com', password:'admin123', role:'admin', redirect:'super.html' },
+    { name:'Mukesh', email:'mukesh@ziyara.com', password:'user123', role:'user', redirect:'index.html' }
+  ];
+
+  let storedUsers = JSON.parse(localStorage.getItem('users')) || [];
+  presetUsers.forEach(preset => {
+    if (!storedUsers.some(u => u.email.toLowerCase() === preset.email.toLowerCase())) {
+      storedUsers.push(preset);
+    }
+  });
+  localStorage.setItem('users', JSON.stringify(storedUsers));
+
+  /*********************************
+   * LOGIN
+   *********************************/
+  function loginUser(){
+    const email = document.getElementById('login-email').value.trim().toLowerCase();
+    const password = document.getElementById('login-password').value.trim();
+
+    const users = JSON.parse(localStorage.getItem('users')) || [];
+    const user = users.find(u => u.email.toLowerCase() === email && u.password === password);
+
+    if(!user){
+      alert('Invalid credentials ❌');
+      console.log("Entered Email:", email);
+      console.log("Entered Password:", password);
+      console.log("Stored users:", users);
+      return;
+    }
+
+    localStorage.setItem('currentUser', JSON.stringify(user));
+    window.location.href = user.redirect || 'index.html';
+  }
+
+  /*********************************
+   * REGISTER
+   *********************************/
+  function registerUser(){
+    const name = document.getElementById('signup-name').value.trim();
+    const email = document.getElementById('signup-email').value.trim().toLowerCase();
+    const password = document.getElementById('signup-password').value.trim();
+
+    if(!name || !email || !password){
+      alert('Fill all fields');
+      return;
+    }
+
+    const users = JSON.parse(localStorage.getItem('users')) || [];
+    if(users.some(u => u.email.toLowerCase() === email)){
+      alert('User already exists');
+      return;
+    }
+
+    users.push({ name, email, password, role: 'user', redirect: 'index.html' });
+    localStorage.setItem('users', JSON.stringify(users));
+    alert('Account created ✅');
+    switchCard('login');
+  }
+
+  /*********************************
+   * PASSWORD RESET
+   *********************************/
+  function resetPassword(){
+    const email = document.getElementById('forgot-email').value.trim().toLowerCase();
+    const newPass = document.getElementById('forgot-password').value.trim();
+
+    if(!email || !newPass){
+      alert('Fill all fields');
+      return;
+    }
+
+    const users = JSON.parse(localStorage.getItem('users')) || [];
+    const idx = users.findIndex(u => u.email.toLowerCase() === email);
+    if(idx === -1){
+      alert('Email not found');
+      return;
+    }
+
+    users[idx].password = newPass;
+    localStorage.setItem('users', JSON.stringify(users));
+    alert('Password updated ✅');
+    switchCard('login');
+  }
+</script>
+
+
+</body>
+</html>
